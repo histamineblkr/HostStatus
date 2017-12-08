@@ -165,7 +165,7 @@ ping_status()
     else
         # Clear ping-out text
         > ${LOG_DIR}/${PING_OUT}
-        for ip in $(${LOG_DIR}/${IPS_ONLY}) ; do
+        for ip in $(cat ${LOG_DIR}/${IPS_ONLY}) ; do
         		ping -q -W 1 -c 1 ${ip} &> /dev/null
         		if [ $? -eq 0 ] ; then
         			   echo "${ip}" > ${LOG_DIR}/${PING_OUT}

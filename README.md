@@ -18,7 +18,7 @@ Use your OS's package manager:
 ```
 yum install fping
 
-# or
+#OR
 
 apt install fping
 ```

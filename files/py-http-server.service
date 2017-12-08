@@ -1,0 +1,7 @@
+[Unit]
+Description = Creates a small python http server to serve up host statuses
+After = network.target
+[Service]
+ExecStart = /home/bauthier/Zonar/Testground/Bash/Testing/host_status/bin/host-serve.py
+[Install]
+WantedBy = multi-user.target

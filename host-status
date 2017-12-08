@@ -1,0 +1,69 @@
+#!/bin/bash
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#  Author: Brandon Authier (hblkr)
+#
+#  Date: 04 Dec 2017
+#
+#  File: host-status
+#
+#  Syntax: host-status [OPTIONS]... [PHPIPAM_TEXT_FILE]
+#
+#  Description:
+#
+#    This is the wrapper script for it-host-status and will start the python
+#    http server if it isn't started.
+#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+BASE_DIR=${PWD}
+BIN_DIR="bin"
+FILES_DIR="files"
+LOG_DIR="log"
+SCRIPTS_DIR="scripts"
+
+# Scripts
+PY_HTTP_SERVER="${BIN_DIR}/host-serve.py"
+IT_HOST_STATUS="${BIN_DIR}/it-host-status.sh"
+AWK_CLEANER="${SCRIPTS_DIR}/clean-host-output.awk"
+AWK_HOST_HTML="${SCRIPTS_DIR}/host-html.awk"
+
+# Functions
+folder_missing_error()
+{
+    echo "Looks like the ${1}/ directory is lost. That's bad :("
+    echo "Please find it and move it back to this directory (${BASE_DIR})"
+    echo "or clone the repo again."
+    exit 1
+}
+
+script_missing_error()
+{
+    echo "Looks like the ${1} script is lost. That's bad :("
+    echo "Please find it and move it back to its location"
+    echo "or clone the repo again."
+    exit 1
+}
+
+# Check all prerequisites, if not there error and exit.
+if ! [ -d ${BIN_DIR} ] ; then
+    folder_missing_error ${BIN_DIR}
+elif ! [ -d ${FILES_DIR} ] ; then
+    folder_missing_error ${FILES_DIR}
+elif ! [ -d ${SCRIPTS_DIR} ] ; then
+    folder_missing_error ${SCRIPTS_DIR}
+elif ! [ -r ${PY_HTTP_SERVER} ] ; then
+    script_missing_error ${PY_HTTP_SERVER}
+elif ! [ -r ${IT_HOST_STATUS} ] ; then
+    script_missing_error ${IT_HOST_STATUS}
+elif ! [ -r ${AWK_CLEANER} ] ; then
+    script_missing_error ${AWK_CLEANER}
+elif ! [ -r ${AWK_HOST_HTML} ] ; then
+    script_missing_error ${AWK_HOST_HTML}
+fi
+
+# Start it-host-status script
+time bash ${IT_HOST_STATUS} "$@"
+
+# Finish
+exit 0

@@ -157,19 +157,19 @@ ping_status()
         echo "[PINGING HOSTS]"
     fi
 
-    # TODO: test for fping if not installed use ping
     # Ping hosts to file (fping preffered)
-    if hash fping ; then
+    echo "Using standard ping"
+    if hash fping &> /dev/null ; then
         fping -c 2 -a < ${LOG_DIR}/${IPS_ONLY} |& grep "2/2/0%" | \
         awk '{ print $1 }' > ${LOG_DIR}/${PING_OUT}
     else
         # Clear ping-out text
         > ${LOG_DIR}/${PING_OUT}
-        for ip in $(${LOG_DIR}/${IPS_ONLY}) ; do
-        		ping -q -W 1 -c 1 ${ip} &> /dev/null
-        		if [ $? -eq 0 ] ; then
-        			   echo "${ip}" > ${LOG_DIR}/${PING_OUT}
-        		fi
+        for ip in $(cat ${LOG_DIR}/${IPS_ONLY}) ; do
+            ping -q -W 1 -c 1 ${ip} &> /dev/null
+            if [ ${?} -eq 0 ] ; then
+                echo "${ip}" >> ${LOG_DIR}/${PING_OUT}
+            fi
       	done
     fi
 
@@ -261,7 +261,8 @@ ssh_status()
         host=$(echo ${line} | awk '{ print $2 }')
 
         # Write successful ssh hosts to file and replace string with "yes" for successful ones
-        if nc -w 1s -z -v ${host} 22 &> /dev/null ; then
+        #if nc -w 1s -z -v ${host} 22 &> /dev/null ; then
+        if nc -w 1 -v ${host} 22 < /dev/null &> /dev/null ; then
             echo ${host} >> ${LOG_DIR}/${SUCCESSFUL_SSH_HOSTS}
             updated_host=$(echo -E -n ${line} | awk '{ print $1, $2, $3, "yes", $5 }')
             sed -i 's/'"$line"'/'"$updated_host"'/' ${LOG_DIR}/${WORK_HOST_1040}

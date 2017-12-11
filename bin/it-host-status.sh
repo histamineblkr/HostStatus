@@ -168,7 +168,7 @@ ping_status()
         for ip in $(cat ${LOG_DIR}/${IPS_ONLY}) ; do
         		ping -q -W 1 -c 1 ${ip} &> /dev/null
         		if [ $? -eq 0 ] ; then
-        			   echo "${ip}" > ${LOG_DIR}/${PING_OUT}
+        			   echo "${ip}" >> ${LOG_DIR}/${PING_OUT}
         		fi
       	done
     fi

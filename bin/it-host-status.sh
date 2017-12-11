@@ -262,7 +262,7 @@ ssh_status()
 
         # Write successful ssh hosts to file and replace string with "yes" for successful ones
         #if nc -w 1s -z -v ${host} 22 &> /dev/null ; then
-        if nc -w 1 -v ${host} 22 < /dev/null &> /dev/null ; then
+        if nc -w 1 ${host} 22 < /dev/null &> /dev/null ; then
             echo ${host} >> ${LOG_DIR}/${SUCCESSFUL_SSH_HOSTS}
             updated_host=$(echo -E -n ${line} | awk '{ print $1, $2, $3, "yes", $5 }')
             sed -i 's/'"$line"'/'"$updated_host"'/' ${LOG_DIR}/${WORK_HOST_1040}

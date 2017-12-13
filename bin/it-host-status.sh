@@ -363,7 +363,6 @@ if [ ${IS_VALID} -eq 0 ] ; then
     ansible_ping &
     CHILD_PID=${!}
     spin_timer ${CHILD_PID}
-    #wait ${CHILD_PID}
 fi
 
 # Get ssh status for hosts

@@ -368,7 +368,7 @@ fi
 # Get ssh status for hosts
 ssh_status &
 CHILD_PID=${!}
-spin_timer $CHILD_PID}
+spin_timer ${CHILD_PID}
 
 # Ping status for hosts and create an IPs file so you don't rely on DNS settings
 cat ${LOG_DIR}/${WORK_HOST_1040} | awk '{ print $1 }' > ${LOG_DIR}/${IPS_ONLY}

@@ -24,7 +24,7 @@
 # Global Variables
 DEBUG="1"
 BASE_DIR=${PWD}
-ANSIBLE_WD=$(find / -name "ansible-it")
+ANSIBLE_WD=$(find / -name "ansible-it" 2> /dev/null)
 LOG_DIR="log"
 FILES_DIR="files"
 SCRIPTS_DIR="scripts"

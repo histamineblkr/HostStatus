@@ -23,7 +23,8 @@
 ################### VARIABLES
 # Global Variables
 DEBUG="1"
-BASE_DIR=${PWD}
+# GROSS hack to get base dir :'( TODO: Find cleaner way to get base dir
+BASE_DIR=$(MINUS_ONE=$(dirname $0); dirname ${MINUS_ONE})
 ANSIBLE_WD=$(find / -name "ansible-it" 2> /dev/null)
 LOG_DIR="log"
 FILES_DIR="files"
@@ -56,7 +57,7 @@ HOST_STATUS_HTML="host-status.html"
 ansible_ping()
 {
     if [ "$DEBUG" = "0" ] ; then
-        echo "[ANSIBLE PINGING] Log here: ${LOG_DIR}/${SUCCESSFUL_ANSIBLE_HOSTS}"
+        echo "[ANSIBLE PINGING] Log here: ${BASE_DIR}/${LOG_DIR}/${SUCCESSFUL_ANSIBLE_HOSTS}"
     else
         echo "[ANSIBLE PINGING]"
     fi
@@ -75,8 +76,8 @@ ansible_ping()
     # Go through and update all hosts that respond to ansible ping
     # Clear text files
     if [ "$DEBUG" = "0" ] ; then
-        > ${LOG_DIR}/${NOTFOUND_ANSIBLE}
-        > ${LOG_DIR}/${FOUND_ANSIBLE}
+        > ${BASE_DIR}/${LOG_DIR}/${NOTFOUND_ANSIBLE}
+        > ${BASE_DIR}/${LOG_DIR}/${FOUND_ANSIBLE}
     fi
 
     # Loop through successful ansible hosts
@@ -85,10 +86,10 @@ ansible_ping()
         updated_host=""
 
         # Try to find host
-        if egrep "\s${line}\s" ${LOG_DIR}/${WORK_HOST_1040} &> /dev/null; then
-            host_found=$(egrep "\s${line}\s" ${LOG_DIR}/${WORK_HOST_1040})
-        elif egrep "\s${line}\b" ${LOG_DIR}/${WORK_HOST_1040} &> /dev/null; then
-            host_found=$(egrep "\s${line}\b" ${LOG_DIR}/${WORK_HOST_1040})
+        if egrep "\s${line}\s" ${BASE_DIR}/${LOG_DIR}/${WORK_HOST_1040} &> /dev/null; then
+            host_found=$(egrep "\s${line}\s" ${BASE_DIR}/${LOG_DIR}/${WORK_HOST_1040})
+        elif egrep "\s${line}\b" ${BASE_DIR}/${LOG_DIR}/${WORK_HOST_1040} &> /dev/null; then
+            host_found=$(egrep "\s${line}\b" ${BASE_DIR}/${LOG_DIR}/${WORK_HOST_1040})
         fi
 
         # This fixes hosts that have 2 ip addresses (This has to do with ipam)
@@ -97,16 +98,16 @@ ansible_ping()
         # Write hosts to found/notfound files and replace string with "yes" for found ones
         if [ -z "${host_found}" ] ; then
             if [ "$DEBUG" = "0" ] ; then
-                echo ${line} >> ${LOG_DIR}/${NOTFOUND_ANSIBLE}
+                echo ${line} >> ${BASE_DIR}/${LOG_DIR}/${NOTFOUND_ANSIBLE}
             fi
         else
             if [ "$DEBUG" = "0" ] ; then
-                echo ${line} >> ${LOG_DIR}/${FOUND_ANSIBLE}
+                echo ${line} >> ${BASE_DIR}/${LOG_DIR}/${FOUND_ANSIBLE}
             fi
             updated_host=$(echo -E -n ${host_found} | awk '{ print $1, $2, "yes", $4, $5 }')
-            sed -i 's/'"$host_found"'/'"$updated_host"'/' ${LOG_DIR}/${WORK_HOST_1040}
+            sed -i 's/'"$host_found"'/'"$updated_host"'/' ${BASE_DIR}/${LOG_DIR}/${WORK_HOST_1040}
         fi
-    done < ${LOG_DIR}/${SUCCESSFUL_ANSIBLE_HOSTS}
+    done < ${BASE_DIR}/${LOG_DIR}/${SUCCESSFUL_ANSIBLE_HOSTS}
 }
 
 # Cleans up unwanted files
@@ -115,33 +116,33 @@ clean_up()
     echo "Cleaning up"
 
     # Save the host display text since it can be useful
-    mv ${LOG_DIR}/${HOST_1040} ${FILES_DIR}/
+    mv ${BASE_DIR}/${LOG_DIR}/${HOST_1040} ${BASE_DIR}/${FILES_DIR}/
 
     # If debug (logging) is off, delete all logs and remove directory
     if ! [ "$DEBUG" = "0" ] ; then
-        if [ -f ${LOG_DIR}/${WORK_HOST_1040} ] ; then
-            rm -f ${LOG_DIR}/${WORK_HOST_1040}
+        if [ -f ${BASE_DIR}/${LOG_DIR}/${WORK_HOST_1040} ] ; then
+            rm -f ${BASE_DIR}/${LOG_DIR}/${WORK_HOST_1040}
         fi
-        if [ -f ${LOG_DIR}/${IPS_ONLY} ] ; then
-            rm -f ${LOG_DIR}/${IPS_ONLY}
+        if [ -f ${BASE_DIR}/${LOG_DIR}/${IPS_ONLY} ] ; then
+            rm -f ${BASE_DIR}/${LOG_DIR}/${IPS_ONLY}
         fi
-        if [ -f ${LOG_DIR}/${PING_OUT} ] ; then
-            rm -f ${LOG_DIR}/${PING_OUT}
+        if [ -f ${BASE_DIR}/${LOG_DIR}/${PING_OUT} ] ; then
+            rm -f ${BASE_DIR}/${LOG_DIR}/${PING_OUT}
         fi
-        if [ -f ${LOG_DIR}/${SUCCESSFUL_ANSIBLE_HOSTS} ] ; then
-            rm -f ${LOG_DIR}/${SUCCESSFUL_ANSIBLE_HOSTS}
+        if [ -f ${BASE_DIR}/${LOG_DIR}/${SUCCESSFUL_ANSIBLE_HOSTS} ] ; then
+            rm -f ${BASE_DIR}/${LOG_DIR}/${SUCCESSFUL_ANSIBLE_HOSTS}
         fi
-        if [ -f ${LOG_DIR}/${SUCCESSFUL_SSH_HOSTS} ] ; then
-            rm -f ${LOG_DIR}/${SUCCESSFUL_SSH_HOSTS}
+        if [ -f ${BASE_DIR}/${LOG_DIR}/${SUCCESSFUL_SSH_HOSTS} ] ; then
+            rm -f ${BASE_DIR}/${LOG_DIR}/${SUCCESSFUL_SSH_HOSTS}
         fi
-        if [ -f ${LOG_DIR}/${NOTFOUND_ANSIBLE} ] ; then
-            rm -f ${LOG_DIR}/${NOTFOUND_ANSIBLE}
+        if [ -f ${BASE_DIR}/${LOG_DIR}/${NOTFOUND_ANSIBLE} ] ; then
+            rm -f ${BASE_DIR}/${LOG_DIR}/${NOTFOUND_ANSIBLE}
         fi
-        if [ -f ${LOG_DIR}/${FOUND_ANSIBLE} ] ; then
-            rm -f ${LOG_DIR}/${FOUND_ANSIBLE}
+        if [ -f ${BASE_DIR}/${LOG_DIR}/${FOUND_ANSIBLE} ] ; then
+            rm -f ${BASE_DIR}/${LOG_DIR}/${FOUND_ANSIBLE}
         fi
-        if [ -d ${LOG_DIR} ] ; then
-            rmdir ${LOG_DIR}
+        if [ -d ${BASE_DIR}/${LOG_DIR} ] ; then
+            rmdir ${BASE_DIR}/${LOG_DIR}
         fi
     fi
 }
@@ -177,15 +178,15 @@ ping_status()
     # Ping hosts to file (fping preffered)
     echo "Using standard ping"
     if hash fping &> /dev/null ; then
-        fping -c 2 -a < ${LOG_DIR}/${IPS_ONLY} |& grep "2/2/0%" | \
-        awk '{ print $1 }' > ${LOG_DIR}/${PING_OUT}
+        fping -c 2 -a < ${BASE_DIR}/${LOG_DIR}/${IPS_ONLY} |& grep "2/2/0%" | \
+        awk '{ print $1 }' > ${BASE_DIR}/${LOG_DIR}/${PING_OUT}
     else
         # Clear ping-out text
-        > ${LOG_DIR}/${PING_OUT}
-        for ip in $(cat ${LOG_DIR}/${IPS_ONLY}) ; do
+        > ${BASE_DIR}/${LOG_DIR}/${PING_OUT}
+        for ip in $(cat ${BASE_DIR}/${LOG_DIR}/${IPS_ONLY}) ; do
             ping -q -W 1 -c 1 ${ip} &> /dev/null
             if [ ${?} -eq 0 ] ; then
-                echo "${ip}" >> ${LOG_DIR}/${PING_OUT}
+                echo "${ip}" >> ${BASE_DIR}/${LOG_DIR}/${PING_OUT}
             fi
       	done
     fi
@@ -196,12 +197,12 @@ ping_status()
         updated_ip=""
 
         # Find ip in working host file and change ping status to yes
-        if egrep "${ip}\s" ${LOG_DIR}/${WORK_HOST_1040} &> /dev/null; then
-            ip_found=$(egrep "${ip}\s" ${LOG_DIR}/${WORK_HOST_1040})
+        if egrep "${ip}\s" ${BASE_DIR}/${LOG_DIR}/${WORK_HOST_1040} &> /dev/null; then
+            ip_found=$(egrep "${ip}\s" ${BASE_DIR}/${LOG_DIR}/${WORK_HOST_1040})
             updated_host=$(echo -E -n ${ip_found} | awk '{ print $1, $2, $3, $4, "yes" }')
-            sed -i 's/'"$ip_found"'/'"$updated_host"'/' ${LOG_DIR}/${WORK_HOST_1040}
+            sed -i 's/'"$ip_found"'/'"$updated_host"'/' ${BASE_DIR}/${LOG_DIR}/${WORK_HOST_1040}
         fi
-    done < ${LOG_DIR}/${PING_OUT}
+    done < ${BASE_DIR}/${LOG_DIR}/${PING_OUT}
 }
 
 # Help function
@@ -212,7 +213,8 @@ help()
     echo ""
     echo "Options:"
     echo " -h             Print help menu"
-    echo " -d             Turn on debugging (produces logs in ${LOG_DIR}/)"
+    echo " -d             Turn on debugging (produces logs in ${BASE_DIR}/${LOG_DIR}/)"
+    echo " -b             Set base directory for execution from different location"
     echo ""
 }
 
@@ -271,7 +273,7 @@ ssh_status()
     fi
 
     # Clear file
-    > ${LOG_DIR}/${SUCCESSFUL_SSH_HOSTS}
+    > ${BASE_DIR}/${LOG_DIR}/${SUCCESSFUL_SSH_HOSTS}
 
     # Loop through all hosts and test ssh connection
     while read -r line; do
@@ -280,11 +282,11 @@ ssh_status()
         # Write successful ssh hosts to file and replace string with "yes" for successful ones
         #if nc -w 1s -z -v ${host} 22 &> /dev/null ; then
         if nc -w 1 ${host} 22 < /dev/null &> /dev/null ; then
-            echo ${host} >> ${LOG_DIR}/${SUCCESSFUL_SSH_HOSTS}
+            echo ${host} >> ${BASE_DIR}/${LOG_DIR}/${SUCCESSFUL_SSH_HOSTS}
             updated_host=$(echo -E -n ${line} | awk '{ print $1, $2, $3, "yes", $5 }')
-            sed -i 's/'"$line"'/'"$updated_host"'/' ${LOG_DIR}/${WORK_HOST_1040}
+            sed -i 's/'"$line"'/'"$updated_host"'/' ${BASE_DIR}/${LOG_DIR}/${WORK_HOST_1040}
         fi
-    done < ${LOG_DIR}/${WORK_HOST_1040}
+    done < ${BASE_DIR}/${LOG_DIR}/${WORK_HOST_1040}
 }
 
 # Catch the SIGINT when the user Ctrl-Cs
@@ -297,8 +299,11 @@ term() {
 
 ################### PREPROCESSING
 # Use getopts to get all flags/options
-while getopts ":dh" opt ; do
+while getopts ":b:dh" opt ; do
     case ${opt} in
+        b)
+            BASE_DIR=$OPTARG
+            ;;
         d)
             DEBUG="0"
             ;;
@@ -322,7 +327,6 @@ fi
 # Set phpipam text file
 IPAM_HOSTS="$1"
 
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prequisites ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # ansible-it repository must exist, if not error and exit.
@@ -332,8 +336,8 @@ if [ ${IS_VALID} -eq 1 ] ; then
 fi
 
 # Create log directory if dne
-if ! [ -d ${LOG_DIR} ] ; then
-    mkdir ${LOG_DIR}
+if ! [ -d ${BASE_DIR}/${LOG_DIR} ] ; then
+    mkdir ${BASE_DIR}/${LOG_DIR}
 fi
 
 # Trap the signal from the user
@@ -342,21 +346,21 @@ trap term SIGINT
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Begin Work ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Create a main file breaking out the 10.40.0.0/16 subnet
-cat ${IPAM_HOSTS} | grep "10.40" | awk -f ${SCRIPTS_DIR}/${AWK_CLEAN_SCRIPT} > ${LOG_DIR}/${HOST_1040}
+cat ${IPAM_HOSTS} | grep "10.40" | awk -f ${BASE_DIR}/${SCRIPTS_DIR}/${AWK_CLEAN_SCRIPT} > ${BASE_DIR}/${LOG_DIR}/${HOST_1040}
 
 # Remove FQDN .sea-001.zonarsystems.net from list for easier manipulation
-remove_fqdn ${LOG_DIR}/${HOST_1040}
+remove_fqdn ${BASE_DIR}/${LOG_DIR}/${HOST_1040}
 
 # Create and sort a hosts file for manipulation
-sort -o ${LOG_DIR}/${WORK_HOST_1040} -k 2 ${LOG_DIR}/${HOST_1040}
+sort -o ${BASE_DIR}/${LOG_DIR}/${WORK_HOST_1040} -k 2 ${BASE_DIR}/${LOG_DIR}/${HOST_1040}
 
 # Strip the comment lines from the working hosts file
-sed -i '/^#/d' ${LOG_DIR}/${WORK_HOST_1040}
+sed -i '/^#/d' ${BASE_DIR}/${LOG_DIR}/${WORK_HOST_1040}
 
 # Assume failed state for ever category
 #   <ip> <hostname> <ansible-status> <sshable> <pingable>
 #   10.40.0.1 dev-db-001 no no no
-sed -i 's/$/ no no no/' ${LOG_DIR}/${WORK_HOST_1040}
+sed -i 's/$/ no no no/' ${BASE_DIR}/${LOG_DIR}/${WORK_HOST_1040}
 
 # Get Ansible ping status for hosts. Only run if ansible-it exists
 if [ ${IS_VALID} -eq 0 ] ; then
@@ -371,7 +375,7 @@ CHILD_PID=${!}
 spin_timer ${CHILD_PID}
 
 # Ping status for hosts and create an IPs file so you don't rely on DNS settings
-cat ${LOG_DIR}/${WORK_HOST_1040} | awk '{ print $1 }' > ${LOG_DIR}/${IPS_ONLY}
+cat ${BASE_DIR}/${LOG_DIR}/${WORK_HOST_1040} | awk '{ print $1 }' > ${BASE_DIR}/${LOG_DIR}/${IPS_ONLY}
 ping_status &
 CHILD_PID=${!}
 spin_timer ${CHILD_PID}
@@ -379,11 +383,11 @@ spin_timer ${CHILD_PID}
 # Copy over results of working hosts file to display hosts file
 echo "starting copying hosts back"
 while read -r line ; do
-    sed -i 's/'"\b$(echo $line | awk '{ print $1, $2 }')\b"'/'"$line"'/' ${LOG_DIR}/${HOST_1040}
-done < ${LOG_DIR}/${WORK_HOST_1040}
+    sed -i 's/'"\b$(echo $line | awk '{ print $1, $2 }')\b"'/'"$line"'/' ${BASE_DIR}/${LOG_DIR}/${HOST_1040}
+done < ${BASE_DIR}/${LOG_DIR}/${WORK_HOST_1040}
 
 # Create host-status.html files
-awk -f ${SCRIPTS_DIR}/${AWK_HOST_HTML_SCRIPT} ${LOG_DIR}/${HOST_1040} > ${HOST_STATUS_HTML}
+awk -f ${BASE_DIR}/${SCRIPTS_DIR}/${AWK_HOST_HTML_SCRIPT} ${BASE_DIR}/${LOG_DIR}/${HOST_1040} > ${BASE_DIR}/${HOST_STATUS_HTML}
 
 # Clean up and exit
 clean_up

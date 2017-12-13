@@ -17,11 +17,11 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Vars
-BASE_DIR=${PWD}
-BIN_DIR="bin"
-FILES_DIR="files"
-LOG_DIR="log"
-SCRIPTS_DIR="scripts"
+BASE_DIR=$(dirname $0)
+BIN_DIR="${BASE_DIR}/bin"
+FILES_DIR="${BASE_DIR}/files"
+LOG_DIR="${BASE_DIR}/log"
+SCRIPTS_DIR="${BASE_DIR}/scripts"
 CHILD_PID=""
 
 # Scripts
@@ -55,7 +55,7 @@ term() {
 # Trap the signal from the user
 trap term SIGINT
 
-# Check all prerequisites, if not there error and exit.
+# Check all prerequisite scripts and directories, if not there, error and exit.
 if ! [ -d ${BIN_DIR} ] ; then
     folder_missing_error ${BIN_DIR}
 elif ! [ -d ${FILES_DIR} ] ; then
@@ -73,7 +73,7 @@ elif ! [ -r ${AWK_HOST_HTML} ] ; then
 fi
 
 # Start it-host-status script
-time bash ${IT_HOST_STATUS} "$@"
+time bash ${IT_HOST_STATUS} "-b ${BASE_DIR}" "$@"
 
 # Catch chile PID
 CHILD_PID=${!}

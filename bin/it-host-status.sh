@@ -28,6 +28,7 @@ ANSIBLE_WD=$(find / -name "ansible-it")
 LOG_DIR="log"
 FILES_DIR="files"
 SCRIPTS_DIR="scripts"
+CHILD_PID=""
 
 # Host files
 IPAM_HOSTS=""
@@ -118,14 +119,30 @@ clean_up()
 
     # If debug (logging) is off, delete all logs and remove directory
     if ! [ "$DEBUG" = "0" ] ; then
-        rm -f ${LOG_DIR}/${WORK_HOST_1040} \
-              ${LOG_DIR}/${IPS_ONLY} \
-              ${LOG_DIR}/${PING_OUT} \
-              ${LOG_DIR}/${SUCCESSFUL_ANSIBLE_HOSTS} \
-              ${LOG_DIR}/${SUCCESSFUL_SSH_HOSTS} \
-              ${LOG_DIR}/${NOTFOUND_ANSIBLE} \
-              ${LOG_DIR}/${FOUND_ANSIBLE}
-        rmdir ${LOG_DIR}
+        if [ -f ${LOG_DIR}/${WORK_HOST_1040} ] ; then
+            rm -f ${LOG_DIR}/${WORK_HOST_1040}
+        fi
+        if [ -f ${LOG_DIR}/${IPS_ONLY} ] ; then
+            rm -f ${LOG_DIR}/${IPS_ONLY}
+        fi
+        if [ -f ${LOG_DIR}/${PING_OUT} ] ; then
+            rm -f ${LOG_DIR}/${PING_OUT}
+        fi
+        if [ -f ${LOG_DIR}/${SUCCESSFUL_ANSIBLE_HOSTS} ] ; then
+            rm -f ${LOG_DIR}/${SUCCESSFUL_ANSIBLE_HOSTS}
+        fi
+        if [ -f ${LOG_DIR}/${SUCCESSFUL_SSH_HOSTS} ] ; then
+            rm -f ${LOG_DIR}/${SUCCESSFUL_SSH_HOSTS}
+        fi
+        if [ -f ${LOG_DIR}/${NOTFOUND_ANSIBLE} ] ; then
+            rm -f ${LOG_DIR}/${NOTFOUND_ANSIBLE}
+        fi
+        if [ -f ${LOG_DIR}/${FOUND_ANSIBLE} ] ; then
+            rm -f ${LOG_DIR}/${FOUND_ANSIBLE}
+        fi
+        if [ -d ${LOG_DIR} ] ; then
+            rmdir ${LOG_DIR}
+        fi
     fi
 }
 
@@ -270,6 +287,14 @@ ssh_status()
     done < ${LOG_DIR}/${WORK_HOST_1040}
 }
 
+# Catch the SIGINT when the user Ctrl-Cs
+term() {
+  echo "Caught SIGINT signal. Cleaning up and exiting."
+  kill -TERM ${CHILD_PID} 2>/dev/null
+  clean_up
+  exit 0
+}
+
 ################### PREPROCESSING
 # Use getopts to get all flags/options
 while getopts ":dh" opt ; do
@@ -311,6 +336,9 @@ if ! [ -d ${LOG_DIR} ] ; then
     mkdir ${LOG_DIR}
 fi
 
+# Trap the signal from the user
+trap term SIGINT
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Begin Work ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Create a main file breaking out the 10.40.0.0/16 subnet
@@ -333,20 +361,21 @@ sed -i 's/$/ no no no/' ${LOG_DIR}/${WORK_HOST_1040}
 # Get Ansible ping status for hosts. Only run if ansible-it exists
 if [ ${IS_VALID} -eq 0 ] ; then
     ansible_ping &
-    PID=$!
-    spin_timer $PID
+    CHILD_PID=${!}
+    spin_timer ${CHILD_PID}
+    #wait ${CHILD_PID}
 fi
 
 # Get ssh status for hosts
 ssh_status &
-PID=$!
-spin_timer $PID
+CHILD_PID=${!}
+spin_timer $CHILD_PID}
 
 # Ping status for hosts and create an IPs file so you don't rely on DNS settings
 cat ${LOG_DIR}/${WORK_HOST_1040} | awk '{ print $1 }' > ${LOG_DIR}/${IPS_ONLY}
 ping_status &
-PID=$!
-spin_timer $PID
+CHILD_PID=${!}
+spin_timer ${CHILD_PID}
 
 # Copy over results of working hosts file to display hosts file
 echo "starting copying hosts back"

@@ -16,11 +16,13 @@
 #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+# Vars
 BASE_DIR=${PWD}
 BIN_DIR="bin"
 FILES_DIR="files"
 LOG_DIR="log"
 SCRIPTS_DIR="scripts"
+CHILD_PID=""
 
 # Scripts
 PY_HTTP_SERVER="${BIN_DIR}/host-serve.py"
@@ -45,6 +47,14 @@ script_missing_error()
     exit 1
 }
 
+term() {
+  echo "Caught SIGINT signal. Exiting."
+  kill -TERM ${CHILD_PID} 2>/dev/null
+}
+
+# Trap the signal from the user
+trap term SIGINT
+
 # Check all prerequisites, if not there error and exit.
 if ! [ -d ${BIN_DIR} ] ; then
     folder_missing_error ${BIN_DIR}
@@ -64,6 +74,10 @@ fi
 
 # Start it-host-status script
 time bash ${IT_HOST_STATUS} "$@"
+
+# Catch chile PID
+CHILD_PID=${!}
+wait ${CHILD_PID}
 
 # Finish
 exit 0

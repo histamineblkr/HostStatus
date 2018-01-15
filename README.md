@@ -12,7 +12,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-You will want fping if you a lot of servers. It will ping much faster.
+You will want fping if you have a lot of servers. It will ping much faster.
 
 Use your OS's package manager:
 ```

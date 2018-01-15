@@ -274,6 +274,7 @@
 10.40.0.193      zds-003.sea-001.zonarsystems.net
 10.40.0.195      twb-red-001.sea-001.zonarsystems.net
 10.40.0.196      twb-red-002.sea-001.zonarsystems.net
+10.40.0.201      netapp-nfs-backup.sea-001.zonarsystems.net
 10.40.0.194      zds-004.sea-001.zonarsystems.net
 10.40.0.221      forms-001
 10.40.2.27       zadmin-db-003
@@ -399,6 +400,7 @@
 10.40.1.177      gtc4-web-008
 10.40.1.178      gtc4-web-009
 10.40.1.179      gtc4-web-010
+10.40.0.89       dev-spl-001.sea-001.zonarsystems.net
 
 # Database cluster interfaces (production) (10.40.128.0/22) - SE2 datacenter
 10.40.128.1      cluster1
@@ -843,6 +845,7 @@
 10.40.202.129    qa-gtc4-web-004
 10.40.193.91     dev-vault-be-002.sea-001.zonarsystems.net
 10.40.193.92     dev-vault-be-003.sea-001.zonarsystems.net
+10.40.193.93     tower-db-001
 
 # admin servers and services, general ( nagios, puppet, zabbix, general jumpbox, netboot, dns ) (10.40.232.0/23) - SE2 datacenter
 10.40.232.2      admin-nas-001
@@ -911,7 +914,6 @@
 10.40.232.103    collab-crowd-001
 10.40.232.104    collab-db-001
 10.40.232.105    bhundven-test-001
-10.40.232.106    muppet-001
 10.40.232.59     backup-offsite-001.sea-001.zonarsystems.net
 10.40.232.240    ntp-005.sea-001.zonarsystems.net
 10.40.232.241    ntp-006.sea-001.zonarsystems.net
@@ -934,6 +936,27 @@
 10.40.232.73     barman-013.sea-001.zonarsystems.net
 10.40.232.74     barman-014.sea-001.zonarsystems.net
 10.40.232.75     barman-015.sea-001.zonarsystems.net
+10.40.232.76     pure-001.sea-001.zonarsystems.net
+10.40.232.106    jbrothers-test-001
+10.40.232.100    spl-clusmgr-001.sea-001.zonarsystems.net
+10.40.232.200    spl-clusmgr-001.sea-001.zonarsystems.net
+10.40.232.201    spl-idx-001.sea-001.zonarsystems.net
+10.40.232.202    spl-idx-002.sea-001.zonarsystems.net
+10.40.232.203    spl-idx-003.sea-001.zonarsystems.net
+10.40.232.204    spl-idx-004.sea-001.zonarsystems.net
+10.40.232.205    spl-idx-005.sea-001.zonarsystems.net
+10.40.232.206    spl-idx-006.sea-001.zonarsystems.net
+10.40.232.207    spl-clusmon-001.sea-001.zonarsystems.net
+10.40.232.208    spl-depsvr-001.sea-001.zonarsystems.net
+10.40.232.209    spl-es-001.sea-001.zonarsystems.net
+10.40.232.210    spl-log-001.sea-001.zonarsystems.net
+10.40.232.211    spl-srch-001.sea-001.zonarsystems.net
+10.40.232.212    spl-srch-002.sea-001.zonarsystems.net
+10.40.232.213    spl-srch-003.sea-001.zonarsystems.net
+10.40.232.214    spl-hfw-001.sea-001.zonarsystems.net
+10.40.232.80     dmz-bigip
+10.40.232.81     dmz-bigip-001
+10.40.232.82     dmz-bigip-002
 
 # Internal Virtual Servers (VIPs on load balancers) (10.40.240.0/23) - SE2 datacenter
 10.40.240.2      bip-ps.sea-001.zonarsystems.net
@@ -1031,6 +1054,9 @@
 10.40.240.91     sds-prod-zpassplusapi-001
 10.40.240.92     sds-prod-zapk-001
 10.40.240.66     gtc4preview.sea-001.zonarsystems.net
+10.40.240.101    jenkins-mobile.sea-001.zonarsystems.net
+10.40.240.93     splunk.sea-001.zonarsystems.net
+10.40.240.102    sds-prod-forms-001.sea-001.zonarsystems.net
 
 # Protected ( network gear, sysad laptops, sysad jumpbox, kvm servers, ipmi ) (10.40.248.0/22) - SE2 datacenter
 10.40.248.15     admin-sec-001
@@ -1370,6 +1396,11 @@
 10.31.1.156      ESX-016
 10.31.1.157      ESX-017
 10.31.1.158      ESX-018
+10.31.1.160      iscsi-pure-poc-001
+10.31.1.161      iscsi-pure-poc-002
+10.31.1.162      iscsi-pure-poc-003
+10.31.1.163      iscsi-pure-poc-004
+10.31.1.164      esx-025.sea-001.zonarsystems.net
 
 # Savvis Xconnect (10.6.1.0/24) - SE2 datacenter
 10.6.1.1         10.6.1.1
@@ -1378,9 +1409,11 @@
 10.6.1.7         BIGIP2
 
 # GA Branch (10.4.0.0/22) - All Corporate Branch offices
+10.4.0.1         atlas01.zcorp.zonarsystems.com
 10.4.0.10        zgabranch1.zcorp.zonarsystems.com
 
 # HQ Server (10.1.0.0/24) - All Corporate Branch offices
+10.1.0.1         hqer01.zcorp.zonarsystems.com
 10.1.0.3         hqcs1
 10.1.0.10        integra mpls router
 10.1.0.11        zhqbranch1.zcorp.zonarsystems.com
@@ -1416,6 +1449,7 @@
 10.1.0.67        hqas2-07
 
 # PSQ Server/Network device (10.2.0.0/24) - All Corporate Branch offices
+10.2.0.1         psqer01.zcorp.zonarsystems.com
 10.2.0.20        10.2.0.20
 10.2.0.21        10.2.0.21
 10.2.0.22        10.2.0.22
@@ -1432,10 +1466,18 @@
 10.2.3.11        10.2.3.11
 
 # CIN Server/Network range (10.3.0.0/24) - All Corporate Branch offices
+10.3.0.1         ciner01.zcorp.zonarsystems.com
+10.3.0.5         cinas01.zcorp.zonarsystems.com
+10.3.0.6         cinas02.zcorp.zonarsystems.com
 10.3.0.11        zcinbranch1.zcorp.zonarsystems.com
 10.3.0.12        zcinhv1
 
 # DOF Server/Network range (10.5.0.0/24) - All Corporate Branch offices
+10.5.0.1         kenter01.zcorp.zonarsystems.com
+10.5.0.4         kentas01.zcorp.zonarsystems.com
+10.5.0.6         kentas02.zcorp.zonarsystems.com
+10.5.0.7         kentas03.zcorp.zonarsystems.com
+10.5.0.8         kentas04.zcorp.zonarsystems.com
 10.5.0.11        zkentbranch1.zcorp.zonarsystems.com
 
 # Network Management (192.168.0.0/24) - SE2 datacenter
@@ -1548,6 +1590,15 @@
 192.168.8.12     ucs-pdu-002.sea-001.zonarsystems.net
 192.168.8.13     ucs-pdu-003.sea-001.zonarsystems.net
 192.168.8.14     ucs-pdu-004.sea-001.zonarsystems.net
+192.168.8.222    esx-022.sea-001.zonarsystems.net
+192.168.8.226    esx-026.sea-001.zonarsystems.net
+192.168.8.219    esx-019.sea-001.zonarsystems.net
+192.168.8.220    esx-020.sea-001.zonarsystems.net
+192.168.8.221    esx-021.sea-001.zonarsystems.net
+192.168.8.223    esx-023.sea-001.zonarsystems.net
+192.168.8.224    esx-024.sea-001.zonarsystems.net
+192.168.8.225    esx-025.sea-001.zonarsystems.net
+192.168.8.227    esx-027.sea-001.zonarsystems.net
 
 # Tor-001 (Tier 3 - Toronto, ON) (10.55.65.0/24) - SE2 datacenter
 10.55.65.1       10.55.65.1
@@ -1657,7 +1708,7 @@
 10.0.0.96        zcomt01
 10.0.0.97        zcodb01
 10.0.0.106       ZCOSANMGMT01
-10.0.0.123       ZcoSW01
+10.0.0.123       se2sw01
 10.0.0.125       ZTCDEVVIP
 10.0.0.126       ZTCQAVIP
 10.0.0.127       ZTCPRODVIP
@@ -1762,6 +1813,8 @@
 10.0.1.36        win-qtc8qcp2fb6.zcorp.zonarsystems.com
 10.0.0.77        zcolister1.zcorp.zonarsystems.com
 10.0.0.44        zcodb05d.zcorp.zonarsystems.com
+10.0.0.78        zcosonar01
+10.0.1.42        zl3069.sea-001.zonarsystems.net
 
 # legacy network in sea-001 (Savvis - Seattle,WA) (10.30.0.0/24) - SE2 datacenter
 10.30.0.4        ts-002
@@ -1867,7 +1920,7 @@
 64.14.130.126    tukwila.zonarsystems.net
 64.14.130.119    gsmfwdev.zonarsystems.net
 64.14.130.120    att-rtr-001
-64.14.130.104    gtcpreview.zonarsystems.net
+64.14.130.104    che3913legacy.zonarsystems.net
 64.14.130.110    evirconfig.zonarsystems.net
 64.14.130.118    upload.zonarsystems.net
 64.14.130.112    download.zonarsystems.net
@@ -1886,6 +1939,8 @@
 64.14.140.26     sds-jenkins-webhook.zonarsystems.com
 64.14.140.21     bip1
 64.14.140.23     bip2
+64.14.140.30     edge-firewall-001
+64.14.140.29     github DNAT address
 
 # HQ Printer (10.1.3.0/24) - All Corporate Branch offices
 10.1.3.18        HQ IT Room 
@@ -1934,17 +1989,6 @@
 4.31.99.2        att-rtr-001
 
 # iSCSI-2 (10.31.2.0/24) - SE2 datacenter
-10.31.2.141      esx-001
-10.31.2.142      esx-002
-10.31.2.143      esx-003
-10.31.2.144      esx-004
-10.31.2.145      esx-005
-10.31.2.146      esx-006
-10.31.2.148      esx-008
-10.31.2.149      esx-009
-10.31.2.150      esx-010
-10.31.2.151      esx-011
-10.31.2.152      esx-012
 10.31.2.2        db-100
 10.31.2.3        db-079
 10.31.2.4        dev-db-006
@@ -2051,7 +2095,6 @@
 10.31.2.246       svn"
 10.31.2.248      db-078
 10.31.2.250      admin-ipam-001
-10.31.2.147      esx-007
 10.31.2.206      db-081
 10.31.2.219      zcovmhost09
 10.31.2.220      zcovmhost10
@@ -2077,6 +2120,12 @@
 10.31.2.38       dev-db-011
 10.31.2.39       qa-db-002
 10.31.2.40       qa-db-003
+10.31.2.160      iscsi-pure-poc-001
+10.31.2.161      iscsi-pure-poc-002
+10.31.2.162      iscsi-pure-poc-003
+10.31.2.163      iscsi-pure-poc-004
+10.31.2.164      esx-025.sea-001.zonarsystems.net
+10.31.2.166      esx-027.sea-001.zonarsystems.net
 
 # VAN-001 (10.50.139.0/24) - SE2 datacenter
 10.50.139.12     ca1zontest01.van-001.zonarsystems.net
@@ -2165,3 +2214,6 @@
 # DA1 - XO PTP (67.110.87.28/30) - External, publicly routable IP addresses
 67.110.87.29     67.110.87.29.ptr.us.xo.net
 67.110.87.30     67.110.87.30.ptr.us.xo.net
+
+# gcp-zonar-barman-prod-network (10.128.128.0/24) - SE2 datacenter
+10.128.128.3     bamran-016.sea-001.zonarsystems.net
